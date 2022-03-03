@@ -18,47 +18,35 @@ class CameraViewModel: ObservableObject {
     
     private let movieFileOutput = AVCaptureMovieFileOutput()
     private let cameraRecordingOutputDelegate: CameraRecordingOutputDelegate = CameraRecordingOutputDelegate()
+    private var captureDevice: AVCaptureDevice?
     
     init() {
         session = AVCaptureSession()
         configureCamera()
     }
     
-    func configureSloMoCaptureDevice(device: AVCaptureDevice) {
-        var bestFormatOptional: AVCaptureDevice.Format?
-                
-        for format in device.formats {
-            // Check for P3_D65 support.
-            guard format.supportedColorSpaces.contains(where: {
-                $0 == AVCaptureColorSpace.P3_D65
-            }) else {
-                continue
-            }
-            
-            // Check for 240 fps
-            guard format.videoSupportedFrameRateRanges.contains(where: { range in
-                range.maxFrameRate == 240
-            }) else {
-                continue
-            }
-            
-            // Check for the resolution you want.
-            guard format.formatDescription.dimensions.width >= 1280 else { continue }
-            guard format.formatDescription.dimensions.height >= 720 else { continue }
-            
-            bestFormatOptional = format
-            
-            break // We found a suitable format, no need to keep looking.
+    func focusOnPoint(focusPoint: CGPoint?) {
+        guard let device = captureDevice else {
+            print("No capture device found, cannot focus on point.")
+            return
         }
         
-        guard let bestFormat = bestFormatOptional else { fatalError("No format matching conditions on this device.") }
-                
-        try! device.lockForConfiguration()
-        device.activeFormat = bestFormat
-        device.activeColorSpace = .P3_D65
-        device.exposureMode = .custom
-        device.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 240)
-        device.unlockForConfiguration()
+        guard let focusPoint = focusPoint else {
+            return
+        }
+        
+        do {
+            try device.lockForConfiguration()
+            
+            device.focusPointOfInterest = focusPoint
+            device.focusMode = .autoFocus
+            device.exposurePointOfInterest = focusPoint
+            device.exposureMode = .continuousAutoExposure
+            device.unlockForConfiguration()
+        }
+        catch {
+            print("Failed to lock device for focus configuration changes.")
+        }
     }
     
     func toggleMovieRecording() {
@@ -163,7 +151,8 @@ class CameraViewModel: ObservableObject {
             let videoDeviceInput = try AVCaptureDeviceInput(device: camera)
             if session.canAddInput(videoDeviceInput) {
                 session.addInput(videoDeviceInput)
-                configureSloMoCaptureDevice(device: videoDeviceInput.device)
+                captureDevice = videoDeviceInput.device
+                configureSloMoCaptureDevice(device: captureDevice!)
             } else {
                 set(error: .cannotAddInput)
                 set(status: .failed)
@@ -190,6 +179,44 @@ class CameraViewModel: ObservableObject {
         }
         
         set(status: .ready)
+    }
+    
+    private func configureSloMoCaptureDevice(device: AVCaptureDevice) {
+        var bestFormatOptional: AVCaptureDevice.Format?
+        
+        for format in device.formats {
+            // Check for P3_D65 support.
+            guard format.supportedColorSpaces.contains(where: {
+                $0 == AVCaptureColorSpace.P3_D65
+            }) else {
+                continue
+            }
+            
+            // Check for 240 fps
+            guard format.videoSupportedFrameRateRanges.contains(where: { range in
+                range.maxFrameRate == 240
+            }) else {
+                continue
+            }
+            
+            // Check for the resolution you want.
+            guard format.formatDescription.dimensions.width >= 1280 else { continue }
+            guard format.formatDescription.dimensions.height >= 720 else { continue }
+            
+            bestFormatOptional = format
+            
+            break // We found a suitable format, no need to keep looking.
+        }
+        
+        guard let bestFormat = bestFormatOptional else { fatalError("No format matching conditions on this device.") }
+        
+        try! device.lockForConfiguration()
+        device.activeFormat = bestFormat
+        device.activeColorSpace = .P3_D65
+        //        device.exposureMode = .custom
+        //        device.setExposureModeCustom(duration: bestFormat.minExposureDuration, iso: bestFormat.maxISO, completionHandler: nil)
+        device.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 240)
+        device.unlockForConfiguration()
     }
     
     private func getVideoCaptureDevice() -> AVCaptureDevice? {
