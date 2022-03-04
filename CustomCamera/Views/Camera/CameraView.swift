@@ -12,6 +12,7 @@ struct CameraView: View {
     @StateObject private var model = CameraViewModel()
     @State private var isAnimatingFocus: Bool = false
     @State private var focusTapLocation: CGPoint?
+    @State private var isShowPhotoLibrary: Bool = false
     
     var body: some View {
         VStack {
@@ -49,7 +50,8 @@ struct CameraView: View {
                             .font(.title)
                             .foregroundColor(.white)
                             .onTapGesture {
-                                UIApplication.shared.open(URL(string: "photos-redirect://")!)
+//                                UIApplication.shared.open(URL(string: "photos-redirect://")!)
+                                isShowPhotoLibrary = true
                             }
                         Spacer()
                         CaptureButton(isRecording: model.status == .recording)
@@ -69,6 +71,10 @@ struct CameraView: View {
                         Spacer()
                     }
                 }
+                .sheet(isPresented: $isShowPhotoLibrary) {
+                    PhotoLibraryView(isShowPhotoLibrary: $isShowPhotoLibrary)
+                }
+
                 
                 VStack {
                     ErrorView(error: model.error)
