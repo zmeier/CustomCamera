@@ -12,15 +12,18 @@ struct PhotoLibraryView: View {
     @Binding var isShowPhotoLibrary: Bool
     @StateObject private var model = PhotoViewModel()
     @State private var selectedPhotoAsset: PHAsset?
+    @State private var scale: CGFloat = 1
 
     var columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 2, alignment: .center), count: 4)
     
     var body: some View {
         ZStack {
             if let photoAsset = selectedPhotoAsset {
-                Image(uiImage: model.getImage(photoAsset: photoAsset))
-                    .resizable()
-                    .scaledToFit()
+                ZoomableScrollView{
+                    Image(uiImage: model.getImage(photoAsset: photoAsset))
+                        .resizable()
+                        .scaledToFit()
+                }
             } else if let photos = model.allPhotos {
                 ScrollView(.vertical, showsIndicators: true) {
                     LazyVGrid(columns: columns, spacing: 2) {
@@ -49,11 +52,13 @@ struct PhotoLibraryView: View {
                     if selectedPhotoAsset == nil {
                         Button("Close") {
                             isShowPhotoLibrary = false
+                            scale = 1
                         }
                         .padding(5)
                     } else {
                         Button("Back") {
                             selectedPhotoAsset = nil
+                            scale = 1
                         }
                         .padding(5)
                     }

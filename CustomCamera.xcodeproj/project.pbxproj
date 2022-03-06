@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B2705B627D4381200E30B44 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2705B527D4381200E30B44 /* ZoomableScrollView.swift */; };
 		4B391F3427D1AC0F009655D2 /* PhotoLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3327D1AC0F009655D2 /* PhotoLibraryView.swift */; };
 		4B391F3827D1AC42009655D2 /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */; };
 		4B391F3A27D1BB2E009655D2 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3927D1BB2E009655D2 /* ImagePicker.swift */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4B2705B527D4381200E30B44 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 		4B391F3327D1AC0F009655D2 /* PhotoLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryView.swift; sourceTree = "<group>"; };
 		4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 		4B391F3927D1BB2E009655D2 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 		4BB722AC27C316F5001E97F2 /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				4B2705B527D4381200E30B44 /* ZoomableScrollView.swift */,
 				4BB722AA27C316CA001E97F2 /* ErrorView.swift */,
 			);
 			path = Util;
@@ -222,6 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B2705B627D4381200E30B44 /* ZoomableScrollView.swift in Sources */,
 				4BB722BE27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift in Sources */,
 				4BB722BA27CC33BC001E97F2 /* PreviewViewRepresentable.swift in Sources */,
 				4BA94D4F27CF1DA9003EE80F /* CameraStatus.swift in Sources */,
