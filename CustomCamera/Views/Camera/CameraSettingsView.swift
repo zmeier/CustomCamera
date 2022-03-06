@@ -12,16 +12,13 @@ struct CameraSettingsView: View {
     @State private var isEditing = false
     
     var body: some View {
-        VStack {
-            Slider(
-                value: $val,
-                in: 0...100,
-                step: 5,
-                onEditingChanged: { editing in
-                    isEditing = editing
+            Form {
+                Section(header: Text("Camera")) {
+                        
                 }
-            )
-        }
+            }
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
 

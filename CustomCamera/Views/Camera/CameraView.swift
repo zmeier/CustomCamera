@@ -12,75 +12,81 @@ struct CameraView: View {
     @StateObject private var model = CameraViewModel()
     @State private var isAnimatingFocus: Bool = false
     @State private var focusTapLocation: CGPoint?
-    @State private var isShowPhotoLibrary: Bool = false
     
     var body: some View {
-        VStack {
-            ZStack {
-                Color(.black)
-                    .edgesIgnoringSafeArea(.all)
-                
-                GeometryReader { geometry in
-                    PreviewViewRepresentable(session: model.session)
-                        .gesture(createDragGesture(geometry: geometry))
-                }
-                
-                if let tapLocation = focusTapLocation {
-                    RoundedRectangle(cornerRadius: 1)
-                        .stroke(.yellow, style: StrokeStyle(lineWidth: 1))
-                        .aspectRatio(1.0, contentMode: .fit)
-                        .frame(width: 150, alignment: .center)
-                        .scaleEffect(isAnimatingFocus ? 0.5 : 1)
-                        .position(x: tapLocation.x, y: tapLocation.y)
-                        .onAppear(perform: {
-                            withAnimation(Animation.easeInOut(duration: 0.5)) {
-                                isAnimatingFocus = true
-                            }
-                        })
-                        .onDisappear(perform: {
-                            isAnimatingFocus = false
-                        })
-                }
-                
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Image(systemName: "photo.on.rectangle.angled")
-                            .font(.title)
-                            .foregroundColor(.white)
-                            .onTapGesture {
-//                                UIApplication.shared.open(URL(string: "photos-redirect://")!)
-                                isShowPhotoLibrary = true
-                            }
-                        Spacer()
-                        CaptureButton(isRecording: model.status == .recording)
-                            .frame(width: 75, height: 75, alignment: .center)
-                            .padding()
-                            .disabled(self.isDisabled())
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                if !self.isDisabled() {
-                                    model.toggleMovieRecording()
+        NavigationView {
+            VStack {
+                ZStack {
+                    Color(.black)
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    GeometryReader { geometry in
+                        PreviewViewRepresentable(session: model.session)
+                            .gesture(createDragGesture(geometry: geometry))
+                    }
+                    
+                    if let tapLocation = focusTapLocation {
+                        RoundedRectangle(cornerRadius: 1)
+                            .stroke(.yellow, style: StrokeStyle(lineWidth: 1))
+                            .aspectRatio(1.0, contentMode: .fit)
+                            .frame(width: 150, alignment: .center)
+                            .scaleEffect(isAnimatingFocus ? 0.5 : 1)
+                            .position(x: tapLocation.x, y: tapLocation.y)
+                            .onAppear(perform: {
+                                withAnimation(Animation.easeInOut(duration: 0.5)) {
+                                    isAnimatingFocus = true
                                 }
-                            }
+                            })
+                            .onDisappear(perform: {
+                                isAnimatingFocus = false
+                            })
+                    }
+                    
+                    VStack {
                         Spacer()
-                        Image(systemName: "ellipsis.circle")
-                            .font(.title)
-                            .foregroundColor(.white)
+                        
+                        HStack {
+                            Spacer()
+                            NavigationLink(
+                                destination: PhotoLibraryView(),
+                                label: {
+                                    Image(systemName: "photo.on.rectangle.angled")
+                                        .font(.title)
+                                        .foregroundColor(.white)
+                                })
+                            Spacer()
+                            CaptureButton(isRecording: model.status == .recording)
+                                .frame(width: 75, height: 75, alignment: .center)
+                                .padding()
+                                .disabled(self.isDisabled())
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    if !self.isDisabled() {
+                                        model.toggleMovieRecording()
+                                    }
+                                }
+                            Spacer()
+                            Image(systemName: "ellipsis.circle")
+                                .font(.title)
+                            Spacer()
+                        }
+                    }
+                    
+                    
+                    VStack {
+                        ErrorView(error: model.error)
                         Spacer()
                     }
                 }
-                .sheet(isPresented: $isShowPhotoLibrary) {
-                    PhotoLibraryView(isShowPhotoLibrary: $isShowPhotoLibrary)
-                }
-
-                
-                VStack {
-                    ErrorView(error: model.error)
-                    Spacer()
-                }
             }
+            .navigationBarItems(trailing: NavigationLink(
+                destination: CameraSettingsView(),
+                label: {
+                    Image(systemName: "gearshape.fill")
+                        .foregroundColor(.white)
+                })
+            )
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     

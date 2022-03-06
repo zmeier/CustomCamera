@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B2705B627D4381200E30B44 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2705B527D4381200E30B44 /* ZoomableScrollView.swift */; };
+		4B2705BA27D461D600E30B44 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2705B927D461D600E30B44 /* PhotoView.swift */; };
 		4B391F3427D1AC0F009655D2 /* PhotoLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3327D1AC0F009655D2 /* PhotoLibraryView.swift */; };
 		4B391F3827D1AC42009655D2 /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */; };
 		4B391F3A27D1BB2E009655D2 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3927D1BB2E009655D2 /* ImagePicker.swift */; };
@@ -31,6 +32,7 @@
 
 /* Begin PBXFileReference section */
 		4B2705B527D4381200E30B44 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
+		4B2705B927D461D600E30B44 /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
 		4B391F3327D1AC0F009655D2 /* PhotoLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryView.swift; sourceTree = "<group>"; };
 		4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 		4B391F3927D1BB2E009655D2 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 				4B391F3327D1AC0F009655D2 /* PhotoLibraryView.swift */,
 				4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */,
 				4B391F3927D1BB2E009655D2 /* ImagePicker.swift */,
+				4B2705B927D461D600E30B44 /* PhotoView.swift */,
 			);
 			path = PhotoLibrary;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 				4BB7229427C3056B001E97F2 /* ContentView.swift in Sources */,
 				4B391F3827D1AC42009655D2 /* PhotoViewModel.swift in Sources */,
 				4BB722C227CC7859001E97F2 /* CameraSettingsView.swift in Sources */,
+				4B2705BA27D461D600E30B44 /* PhotoView.swift in Sources */,
 				4BB722A927C31667001E97F2 /* CameraError.swift in Sources */,
 				4B391F3C27D1C971009655D2 /* PHFetchResultCollection.swift in Sources */,
 				4B9C2D1427D3159600AC8FAD /* AuthorizationError.swift in Sources */,
