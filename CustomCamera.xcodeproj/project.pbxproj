@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		4B2705B627D4381200E30B44 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2705B527D4381200E30B44 /* ZoomableScrollView.swift */; };
 		4B2705BA27D461D600E30B44 /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2705B927D461D600E30B44 /* PhotoView.swift */; };
+		4B2705BD27D4676100E30B44 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2705BC27D4676100E30B44 /* SettingsView.swift */; };
+		4B2705BF27D55EE200E30B44 /* CaptureDeviceFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B2705BE27D55EE200E30B44 /* CaptureDeviceFormat.swift */; };
 		4B391F3427D1AC0F009655D2 /* PhotoLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3327D1AC0F009655D2 /* PhotoLibraryView.swift */; };
 		4B391F3827D1AC42009655D2 /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */; };
 		4B391F3A27D1BB2E009655D2 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3927D1BB2E009655D2 /* ImagePicker.swift */; };
@@ -27,12 +29,13 @@
 		4BB722B227C33F57001E97F2 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB722B127C33F57001E97F2 /* CaptureButton.swift */; };
 		4BB722BA27CC33BC001E97F2 /* PreviewViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB722B927CC33BC001E97F2 /* PreviewViewRepresentable.swift */; };
 		4BB722BE27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB722BD27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift */; };
-		4BB722C227CC7859001E97F2 /* CameraSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB722C127CC7859001E97F2 /* CameraSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4B2705B527D4381200E30B44 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 		4B2705B927D461D600E30B44 /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
+		4B2705BC27D4676100E30B44 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		4B2705BE27D55EE200E30B44 /* CaptureDeviceFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureDeviceFormat.swift; sourceTree = "<group>"; };
 		4B391F3327D1AC0F009655D2 /* PhotoLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryView.swift; sourceTree = "<group>"; };
 		4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 		4B391F3927D1BB2E009655D2 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -52,7 +55,6 @@
 		4BB722B127C33F57001E97F2 /* CaptureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureButton.swift; sourceTree = "<group>"; };
 		4BB722B927CC33BC001E97F2 /* PreviewViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewRepresentable.swift; sourceTree = "<group>"; };
 		4BB722BD27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRecordingOutputDelegate.swift; sourceTree = "<group>"; };
-		4BB722C127CC7859001E97F2 /* CameraSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B2705BB27D4664200E30B44 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				4B2705BC27D4676100E30B44 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		4B391F3227D1ABE0009655D2 /* PhotoLibrary */ = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +126,7 @@
 		4BB7229F27C3064E001E97F2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4B2705BB27D4664200E30B44 /* Settings */,
 				4B391F3227D1ABE0009655D2 /* PhotoLibrary */,
 				4BB722AC27C316F5001E97F2 /* Util */,
 				4BB722A027C3065C001E97F2 /* Camera */,
@@ -130,7 +141,6 @@
 				4BB722A327C306B0001E97F2 /* PreviewView.swift */,
 				4BB722B927CC33BC001E97F2 /* PreviewViewRepresentable.swift */,
 				4BB722B127C33F57001E97F2 /* CaptureButton.swift */,
-				4BB722C127CC7859001E97F2 /* CameraSettingsView.swift */,
 				4BB722A627C307A9001E97F2 /* CameraView.swift */,
 				4BB722AD27C33AB2001E97F2 /* CameraViewModel.swift */,
 				4BB722BD27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift */,
@@ -145,6 +155,7 @@
 				4B9C2D1327D3159600AC8FAD /* AuthorizationError.swift */,
 				4BA94D4E27CF1DA9003EE80F /* CameraStatus.swift */,
 				4B391F3B27D1C971009655D2 /* PHFetchResultCollection.swift */,
+				4B2705BE27D55EE200E30B44 /* CaptureDeviceFormat.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -230,11 +241,12 @@
 			files = (
 				4B2705B627D4381200E30B44 /* ZoomableScrollView.swift in Sources */,
 				4BB722BE27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift in Sources */,
+				4B2705BF27D55EE200E30B44 /* CaptureDeviceFormat.swift in Sources */,
 				4BB722BA27CC33BC001E97F2 /* PreviewViewRepresentable.swift in Sources */,
 				4BA94D4F27CF1DA9003EE80F /* CameraStatus.swift in Sources */,
 				4BB7229427C3056B001E97F2 /* ContentView.swift in Sources */,
+				4B2705BD27D4676100E30B44 /* SettingsView.swift in Sources */,
 				4B391F3827D1AC42009655D2 /* PhotoViewModel.swift in Sources */,
-				4BB722C227CC7859001E97F2 /* CameraSettingsView.swift in Sources */,
 				4B2705BA27D461D600E30B44 /* PhotoView.swift in Sources */,
 				4BB722A927C31667001E97F2 /* CameraError.swift in Sources */,
 				4B391F3C27D1C971009655D2 /* PHFetchResultCollection.swift in Sources */,

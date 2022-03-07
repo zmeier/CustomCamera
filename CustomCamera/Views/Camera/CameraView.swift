@@ -12,6 +12,7 @@ struct CameraView: View {
     @StateObject private var model = CameraViewModel()
     @State private var isAnimatingFocus: Bool = false
     @State private var focusTapLocation: CGPoint?
+    @State private var isShowCameraCustomization: Bool = false
     
     var body: some View {
         NavigationView {
@@ -45,6 +46,10 @@ struct CameraView: View {
                     VStack {
                         Spacer()
                         
+                        if isShowCameraCustomization {
+                            
+                        }
+                        
                         HStack {
                             Spacer()
                             NavigationLink(
@@ -68,6 +73,10 @@ struct CameraView: View {
                             Spacer()
                             Image(systemName: "ellipsis.circle")
                                 .font(.title)
+                                .foregroundColor(isShowCameraCustomization ? .yellow : .white)
+                                .onTapGesture {
+                                    isShowCameraCustomization.toggle()
+                                }
                             Spacer()
                         }
                     }
@@ -80,7 +89,7 @@ struct CameraView: View {
                 }
             }
             .navigationBarItems(trailing: NavigationLink(
-                destination: CameraSettingsView(),
+                destination: SettingsView(model: model),
                 label: {
                     Image(systemName: "gearshape.fill")
                         .foregroundColor(.white)

@@ -8,26 +8,103 @@
 import UIKit
 import AVFoundation
 
-class CameraViewModel: ObservableObject {        
+class CameraViewModel: ObservableObject {
+    private static let SELECTED_CAMERA_DEFAULT_KEY = "SelectedCameraDevice"
+    private static let SELECTED_CAMERA_FORMAT_DEFAULT_KEY = "SelectedCameraDeviceFormat"
+    
     @Published var error: CameraError?
     @Published var isCameraDisabled: Bool = false
     @Published var status = CameraStatus.unconfigured
+    @Published var availableDevices: [AVCaptureDevice]
+    @Published var selectedDeviceIndex: Int? {
+        didSet {
+            if selectedDeviceIndex != oldValue {
+                self.sessionQueue.async {
+                    self.configureCaptureSession()
+                }
+            }
+        }
+    }
+    @Published var selectedCaptureDeviceFormat: CaptureDeviceFormat? {
+        didSet {
+            if selectedCaptureDeviceFormat != oldValue {
+                if let dataToSave = selectedCaptureDeviceFormat {
+                    let encodedData = try? JSONEncoder().encode(dataToSave)
+                    self.defaults.set(encodedData, forKey: CameraViewModel.SELECTED_CAMERA_FORMAT_DEFAULT_KEY)
+                }
+                self.sessionQueue.async {
+                    self.updateFormatConfiguration()
+                }
+            }
+        }
+    }
     
     let session: AVCaptureSession
     let sessionQueue = DispatchQueue(label: "com.zmeier.SessionQ")
     
+    private let defaults = UserDefaults.standard
     private let movieFileOutput = AVCaptureMovieFileOutput()
     private let cameraRecordingOutputDelegate: CameraRecordingOutputDelegate = CameraRecordingOutputDelegate()
-    private var captureDevice: AVCaptureDevice?
     
     init() {
         session = AVCaptureSession()
+        
+        let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes:
+                                                                    [.builtInTrueDepthCamera, .builtInDualCamera, .builtInWideAngleCamera],
+                                                                mediaType: .video, position: .unspecified)
+        availableDevices = discoverySession.devices
+        let selectedCamera = defaults.string(forKey: CameraViewModel.SELECTED_CAMERA_DEFAULT_KEY)
+        
+        if availableDevices.count == 0 {
+            selectedDeviceIndex = nil
+        } else {
+            selectedDeviceIndex = 0
+            if let selectedCamera = selectedCamera {
+                for i in 0..<availableDevices.count {
+                    if availableDevices[i].uniqueID == selectedCamera {
+                        selectedDeviceIndex = i
+                        if let data = defaults.object(forKey: CameraViewModel.SELECTED_CAMERA_FORMAT_DEFAULT_KEY) as? Data {
+                            selectedCaptureDeviceFormat = try? JSONDecoder().decode(CaptureDeviceFormat.self, from: data)
+                        }
+                        break
+                    }
+                }
+            }
+        }
+        
+        
         configureCamera()
     }
     
+    func getVideoCaptureDevice() -> AVCaptureDevice? {
+        guard let selectedDeviceIndex = selectedDeviceIndex else {
+            return nil
+        }
+        return availableDevices[selectedDeviceIndex]
+    }
+    
+    func getAvailableVideoCaptureFormats() -> Set<CaptureDeviceFormat>? {
+        guard let captureDevice = getVideoCaptureDevice() else {
+            return nil
+        }
+        
+        var captureDeviceFormats = Set<CaptureDeviceFormat>()
+        for format in captureDevice.formats {
+            if let captureDeviceFormat = getCaptureDeviceFormat(for: format) {
+                captureDeviceFormats.insert(captureDeviceFormat)
+            }
+        }
+        
+        return captureDeviceFormats
+    }
+    
     func focusOnPoint(focusPoint: CGPoint?) {
-        guard let device = captureDevice else {
+        guard let device = getVideoCaptureDevice() else {
             print("No capture device found, cannot focus on point.")
+            return
+        }
+        
+        if !device.isFocusPointOfInterestSupported {
             return
         }
         
@@ -100,6 +177,7 @@ class CameraViewModel: ObservableObject {
         checkCameraPermissions()
         
         sessionQueue.async {
+            self.updateFormatConfiguration()
             self.configureCaptureSession()
             self.session.startRunning()
         }
@@ -131,14 +209,21 @@ class CameraViewModel: ObservableObject {
     }
     
     private func configureCaptureSession() {
-        guard status == .unconfigured else {
-            return
-        }
+        set(error: nil)
+        set(status: .unconfigured)
         
         session.beginConfiguration()
         
         defer {
             session.commitConfiguration()
+        }
+        
+        for input in session.inputs {
+            session.removeInput(input)
+        }
+        
+        for output in session.outputs {
+            session.removeOutput(output)
         }
         
         guard let camera = getVideoCaptureDevice() else {
@@ -151,16 +236,17 @@ class CameraViewModel: ObservableObject {
             let videoDeviceInput = try AVCaptureDeviceInput(device: camera)
             if session.canAddInput(videoDeviceInput) {
                 session.addInput(videoDeviceInput)
-                captureDevice = videoDeviceInput.device
-                configureSloMoCaptureDevice(device: captureDevice!)
+                defaults.set(videoDeviceInput.device.uniqueID, forKey: CameraViewModel.SELECTED_CAMERA_DEFAULT_KEY)
             } else {
                 set(error: .cannotAddInput)
                 set(status: .failed)
+                defaults.set(nil, forKey: CameraViewModel.SELECTED_CAMERA_DEFAULT_KEY)
                 return
             }
         } catch {
             set(error: .createCaptureInput(error))
             set(status: .failed)
+            defaults.set(nil, forKey: CameraViewModel.SELECTED_CAMERA_DEFAULT_KEY)
             return
         }
         
@@ -181,55 +267,63 @@ class CameraViewModel: ObservableObject {
         set(status: .ready)
     }
     
-    private func configureSloMoCaptureDevice(device: AVCaptureDevice) {
-        var bestFormatOptional: AVCaptureDevice.Format?
-        
-        for format in device.formats {
-            // Check for P3_D65 support.
-            guard format.supportedColorSpaces.contains(where: {
-                $0 == AVCaptureColorSpace.P3_D65
-            }) else {
-                continue
-            }
-            
-            // Check for 240 fps
-            guard format.videoSupportedFrameRateRanges.contains(where: { range in
-                range.maxFrameRate == 240
-            }) else {
-                continue
-            }
-            
-            // Check for the resolution you want.
-            guard format.formatDescription.dimensions.width >= 1280 else { continue }
-            guard format.formatDescription.dimensions.height >= 720 else { continue }
-            
-            bestFormatOptional = format
-            
-            break // We found a suitable format, no need to keep looking.
+    private func updateFormatConfiguration() {
+        guard let device = getVideoCaptureDevice() else {
+            print("Cannot update format configuration as no device is currently configured")
+            return
         }
         
-        guard let bestFormat = bestFormatOptional else { fatalError("No format matching conditions on this device.") }
+        if selectedCaptureDeviceFormat == nil {
+            return
+        }
+        
+        var bestFormat: AVCaptureDevice.Format?
+        for format in device.formats {
+            if let captureDeviceFormat = getCaptureDeviceFormat(for: format) {
+                if captureDeviceFormat == selectedCaptureDeviceFormat {
+                    bestFormat = format
+                    break
+                }
+            }
+        }
+        
+        guard let bestFormat = bestFormat else {
+            print("Could not find a format matching the current selected format")
+            return
+        }
         
         try! device.lockForConfiguration()
         device.activeFormat = bestFormat
         device.activeColorSpace = .P3_D65
-        //        device.exposureMode = .custom
-        //        device.setExposureModeCustom(duration: bestFormat.minExposureDuration, iso: bestFormat.maxISO, completionHandler: nil)
-        device.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 240)
+        if let maxFrameRate = getMaxFrameRate(for: bestFormat) {
+            device.activeVideoMinFrameDuration = CMTime(value: 1, timescale: CMTimeScale(maxFrameRate))
+        }
         device.unlockForConfiguration()
     }
     
-    private func getVideoCaptureDevice() -> AVCaptureDevice? {
-        if let backCameraDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
-            return backCameraDevice
-        } else if let dualWideCameraDevice = AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back) {
-            return dualWideCameraDevice
-        } else if let dualCameraDevice = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
-            return dualCameraDevice
-        } else if let defaultCameraDevice = AVCaptureDevice.default(for: .video) {
-            return defaultCameraDevice
+    private func getCaptureDeviceFormat(for format: AVCaptureDevice.Format) -> CaptureDeviceFormat? {
+        guard format.supportedColorSpaces.contains(where: {
+            $0 == AVCaptureColorSpace.P3_D65
+        }) else {
+            return nil
         }
-        return nil
+        
+        guard let maxFrameRate = getMaxFrameRate(for: format) else {
+            return nil
+        }
+        
+        return CaptureDeviceFormat(
+            resolutionWidth: format.formatDescription.dimensions.width,
+            resolutionHeight: format.formatDescription.dimensions.height,
+            maxFps: maxFrameRate
+        )
+    }
+    
+    private func getMaxFrameRate(for format: AVCaptureDevice.Format) -> Double? {
+        return format.videoSupportedFrameRateRanges.max {
+            $0.maxFrameRate < $1.maxFrameRate
+        }.map {
+            $0.maxFrameRate
+        }
     }
 }
-
