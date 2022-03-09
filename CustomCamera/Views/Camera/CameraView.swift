@@ -46,41 +46,44 @@ struct CameraView: View {
                     VStack {
                         Spacer()
                         
-                        if isShowCameraCustomization {
+                        VStack {
+                            if isShowCameraCustomization {
+                                CameraCaptureSettings(settings: model.captureSettings)
+                                    .padding()
+                            }
                             
-                        }
-                        
-                        HStack {
-                            Spacer()
-                            NavigationLink(
-                                destination: PhotoLibraryView(),
-                                label: {
-                                    Image(systemName: "photo.on.rectangle.angled")
-                                        .font(.title)
-                                        .foregroundColor(.white)
-                                })
-                            Spacer()
-                            CaptureButton(isRecording: model.status == .recording)
-                                .frame(width: 75, height: 75, alignment: .center)
-                                .padding()
-                                .disabled(self.isDisabled())
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    if !self.isDisabled() {
-                                        model.toggleMovieRecording()
+                            HStack {
+                                Spacer()
+                                NavigationLink(
+                                    destination: PhotoLibraryView(),
+                                    label: {
+                                        Image(systemName: "photo.on.rectangle.angled")
+                                            .font(.title)
+                                            .foregroundColor(.white)
+                                    })
+                                Spacer()
+                                CaptureButton(isRecording: model.status == .recording)
+                                    .frame(width: 75, height: 75, alignment: .center)
+                                    .padding()
+                                    .disabled(self.isDisabled())
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        if !self.isDisabled() {
+                                            model.toggleMovieRecording()
+                                        }
                                     }
-                                }
-                            Spacer()
-                            Image(systemName: "ellipsis.circle")
-                                .font(.title)
-                                .foregroundColor(isShowCameraCustomization ? .yellow : .white)
-                                .onTapGesture {
-                                    isShowCameraCustomization.toggle()
-                                }
-                            Spacer()
+                                Spacer()
+                                Image(systemName: "ellipsis.circle")
+                                    .font(.title)
+                                    .foregroundColor(isShowCameraCustomization ? .yellow : .white)
+                                    .onTapGesture {
+                                        isShowCameraCustomization.toggle()
+                                    }
+                                Spacer()
+                            }
                         }
+                        .background(isShowCameraCustomization ? Color.black.opacity(0.5) : Color.clear)
                     }
-                    
                     
                     VStack {
                         ErrorView(error: model.error)

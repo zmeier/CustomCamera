@@ -15,6 +15,8 @@
 		4B391F3827D1AC42009655D2 /* PhotoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */; };
 		4B391F3A27D1BB2E009655D2 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3927D1BB2E009655D2 /* ImagePicker.swift */; };
 		4B391F3C27D1C971009655D2 /* PHFetchResultCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B391F3B27D1C971009655D2 /* PHFetchResultCollection.swift */; };
+		4B6D1B7A27D6DCF70006A8E3 /* CameraCaptureSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B6D1B7927D6DCF70006A8E3 /* CameraCaptureSettings.swift */; };
+		4B6D1B7C27D6ECF10006A8E3 /* CaptureSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B6D1B7B27D6ECF10006A8E3 /* CaptureSettings.swift */; };
 		4B9C2D1427D3159600AC8FAD /* AuthorizationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9C2D1327D3159600AC8FAD /* AuthorizationError.swift */; };
 		4BA94D4F27CF1DA9003EE80F /* CameraStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA94D4E27CF1DA9003EE80F /* CameraStatus.swift */; };
 		4BB7229227C3056B001E97F2 /* CustomCameraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB7229127C3056B001E97F2 /* CustomCameraApp.swift */; };
@@ -40,6 +42,8 @@
 		4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewModel.swift; sourceTree = "<group>"; };
 		4B391F3927D1BB2E009655D2 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		4B391F3B27D1C971009655D2 /* PHFetchResultCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PHFetchResultCollection.swift; sourceTree = "<group>"; };
+		4B6D1B7927D6DCF70006A8E3 /* CameraCaptureSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCaptureSettings.swift; sourceTree = "<group>"; };
+		4B6D1B7B27D6ECF10006A8E3 /* CaptureSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSettings.swift; sourceTree = "<group>"; };
 		4B9C2D1327D3159600AC8FAD /* AuthorizationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationError.swift; sourceTree = "<group>"; };
 		4BA94D4E27CF1DA9003EE80F /* CameraStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStatus.swift; sourceTree = "<group>"; };
 		4BB7228E27C3056B001E97F2 /* CustomCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CustomCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				4B2705BC27D4676100E30B44 /* SettingsView.swift */,
+				4B6D1B7927D6DCF70006A8E3 /* CameraCaptureSettings.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -156,6 +161,7 @@
 				4BA94D4E27CF1DA9003EE80F /* CameraStatus.swift */,
 				4B391F3B27D1C971009655D2 /* PHFetchResultCollection.swift */,
 				4B2705BE27D55EE200E30B44 /* CaptureDeviceFormat.swift */,
+				4B6D1B7B27D6ECF10006A8E3 /* CaptureSettings.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -245,12 +251,14 @@
 				4BB722BA27CC33BC001E97F2 /* PreviewViewRepresentable.swift in Sources */,
 				4BA94D4F27CF1DA9003EE80F /* CameraStatus.swift in Sources */,
 				4BB7229427C3056B001E97F2 /* ContentView.swift in Sources */,
+				4B6D1B7A27D6DCF70006A8E3 /* CameraCaptureSettings.swift in Sources */,
 				4B2705BD27D4676100E30B44 /* SettingsView.swift in Sources */,
 				4B391F3827D1AC42009655D2 /* PhotoViewModel.swift in Sources */,
 				4B2705BA27D461D600E30B44 /* PhotoView.swift in Sources */,
 				4BB722A927C31667001E97F2 /* CameraError.swift in Sources */,
 				4B391F3C27D1C971009655D2 /* PHFetchResultCollection.swift in Sources */,
 				4B9C2D1427D3159600AC8FAD /* AuthorizationError.swift in Sources */,
+				4B6D1B7C27D6ECF10006A8E3 /* CaptureSettings.swift in Sources */,
 				4BB7229227C3056B001E97F2 /* CustomCameraApp.swift in Sources */,
 				4BB722A427C306B0001E97F2 /* PreviewView.swift in Sources */,
 				4BB722AE27C33AB2001E97F2 /* CameraViewModel.swift in Sources */,

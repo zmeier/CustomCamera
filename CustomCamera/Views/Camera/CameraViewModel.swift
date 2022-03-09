@@ -5,6 +5,7 @@
 //  Created by Zachary Meier on 2/20/22.
 //
 
+import Foundation
 import UIKit
 import AVFoundation
 
@@ -19,6 +20,12 @@ class CameraViewModel: ObservableObject {
     @Published var selectedDeviceIndex: Int? {
         didSet {
             if selectedDeviceIndex != oldValue {
+                if let index = selectedDeviceIndex {
+                    captureDevice = availableDevices[index]
+                } else {
+                    captureDevice = nil
+                }
+                
                 self.sessionQueue.async {
                     self.configureCaptureSession()
                 }
@@ -38,9 +45,16 @@ class CameraViewModel: ObservableObject {
             }
         }
     }
+    @Published var captureSettings: CaptureSettings = CaptureSettings(onUpdate: nil)
     
     let session: AVCaptureSession
     let sessionQueue = DispatchQueue(label: "com.zmeier.SessionQ")
+    
+    private var captureDevice: AVCaptureDevice? {
+        didSet {
+            handleCaptureDeviceUpdated()
+        }
+    }
     
     private let defaults = UserDefaults.standard
     private let movieFileOutput = AVCaptureMovieFileOutput()
@@ -72,19 +86,20 @@ class CameraViewModel: ObservableObject {
             }
         }
         
+        if let index = selectedDeviceIndex {
+            captureDevice = availableDevices[index]
+            handleCaptureDeviceUpdated()
+        } else {
+            captureDevice = nil
+        }
         
         configureCamera()
-    }
-    
-    func getVideoCaptureDevice() -> AVCaptureDevice? {
-        guard let selectedDeviceIndex = selectedDeviceIndex else {
-            return nil
-        }
-        return availableDevices[selectedDeviceIndex]
+        
+        captureSettings.onUpdate = self.updateDeviceCaptureSettings
     }
     
     func getAvailableVideoCaptureFormats() -> Set<CaptureDeviceFormat>? {
-        guard let captureDevice = getVideoCaptureDevice() else {
+        guard let captureDevice = captureDevice else {
             return nil
         }
         
@@ -99,7 +114,7 @@ class CameraViewModel: ObservableObject {
     }
     
     func focusOnPoint(focusPoint: CGPoint?) {
-        guard let device = getVideoCaptureDevice() else {
+        guard let device = captureDevice else {
             print("No capture device found, cannot focus on point.")
             return
         }
@@ -118,8 +133,8 @@ class CameraViewModel: ObservableObject {
             device.focusPointOfInterest = focusPoint
             device.focusMode = .autoFocus
             device.exposurePointOfInterest = focusPoint
-            device.exposureMode = .continuousAutoExposure
             device.unlockForConfiguration()
+            captureSettings.useCustomExposure = false
         }
         catch {
             print("Failed to lock device for focus configuration changes.")
@@ -226,7 +241,7 @@ class CameraViewModel: ObservableObject {
             session.removeOutput(output)
         }
         
-        guard let camera = getVideoCaptureDevice() else {
+        guard let camera = captureDevice else {
             set(error: .cameraUnavailable)
             set(status: .failed)
             return
@@ -268,7 +283,7 @@ class CameraViewModel: ObservableObject {
     }
     
     private func updateFormatConfiguration() {
-        guard let device = getVideoCaptureDevice() else {
+        guard let device = captureDevice else {
             print("Cannot update format configuration as no device is currently configured")
             return
         }
@@ -299,6 +314,11 @@ class CameraViewModel: ObservableObject {
             device.activeVideoMinFrameDuration = CMTime(value: 1, timescale: CMTimeScale(maxFrameRate))
         }
         device.unlockForConfiguration()
+        
+        captureSettings.minShutter = Float(bestFormat.maxExposureDuration.timescale)
+        captureSettings.maxShutter = Float(bestFormat.minExposureDuration.timescale)
+        captureSettings.minIso = bestFormat.minISO
+        captureSettings.maxIso = bestFormat.maxISO
     }
     
     private func getCaptureDeviceFormat(for format: AVCaptureDevice.Format) -> CaptureDeviceFormat? {
@@ -324,6 +344,52 @@ class CameraViewModel: ObservableObject {
             $0.maxFrameRate < $1.maxFrameRate
         }.map {
             $0.maxFrameRate
+        }
+    }
+    
+    private func updateDeviceCaptureSettings() {
+        guard let device = captureDevice else {
+            print("Cannot find capture device to update")
+            return
+        }
+        
+        try! device.lockForConfiguration()
+        defer {
+            device.unlockForConfiguration()
+        }
+        
+        if captureSettings.useCustomExposure {
+            device.exposureMode = .custom
+        } else {
+            device.exposureMode = .continuousAutoExposure
+        }
+        
+        if device.exposureMode == .custom {
+            var shutter = CMTime(value: 1, timescale: CMTimeScale(captureSettings.shutter))
+            if shutter < device.activeFormat.minExposureDuration {
+                shutter = device.activeFormat.minExposureDuration
+            } else if shutter > device.activeFormat.maxExposureDuration {
+                shutter = device.activeFormat.maxExposureDuration
+            }
+            
+            var iso = captureSettings.iso
+            if iso < device.activeFormat.minISO {
+                iso = device.activeFormat.minISO
+            } else if iso > device.activeFormat.maxISO {
+                iso = device.activeFormat.maxISO
+            }
+            
+            device.setExposureModeCustom(duration: shutter, iso: iso, completionHandler: nil)
+        }
+    }
+    
+    private func handleCaptureDeviceUpdated() {
+        if let captureDevice = captureDevice {
+            captureSettings.useCustomExposure = captureDevice.exposureMode == .custom
+            captureSettings.shutter = Float(captureDevice.exposureDuration.timescale)
+            captureSettings.iso = Float(captureDevice.iso)
+        } else {
+            captureSettings.useCustomExposure = false
         }
     }
 }
