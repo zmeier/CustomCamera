@@ -22,14 +22,25 @@ struct PhotoLibraryView: View {
                     LazyVGrid(columns: columns, spacing: 2) {
                         ForEach(photos, id: \.localIdentifier) { photoAsset in
                             GeometryReader { geometry in
-                                NavigationLink(
-                                    destination: PhotoView(model: model, photoAsset: photoAsset),
-                                    label: {
-                                        Image(uiImage: model.getThumbnail(photoAsset: photoAsset, width: 150, height: 150))
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(height: geometry.size.width)
-                                    })
+                                if photoAsset.mediaType == .video {
+                                    NavigationLink(
+                                        destination: VideoView(model: model, videoAsset: photoAsset),
+                                        label: {
+                                            Image(uiImage: model.getThumbnail(photoAsset: photoAsset, width: 150, height: 150))
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(height: geometry.size.width)
+                                        })
+                                } else {
+                                    NavigationLink(
+                                        destination: PhotoView(model: model, photoAsset: photoAsset),
+                                        label: {
+                                            Image(uiImage: model.getThumbnail(photoAsset: photoAsset, width: 150, height: 150))
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(height: geometry.size.width)
+                                        })
+                                }
                             }
                             .clipped()
                             .aspectRatio(1, contentMode: .fit)

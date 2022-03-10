@@ -31,6 +31,7 @@
 		4BB722B227C33F57001E97F2 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB722B127C33F57001E97F2 /* CaptureButton.swift */; };
 		4BB722BA27CC33BC001E97F2 /* PreviewViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB722B927CC33BC001E97F2 /* PreviewViewRepresentable.swift */; };
 		4BB722BE27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB722BD27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift */; };
+		4BDDF97127D9872F00BAB792 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDDF97027D9872F00BAB792 /* VideoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 		4BB722B127C33F57001E97F2 /* CaptureButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureButton.swift; sourceTree = "<group>"; };
 		4BB722B927CC33BC001E97F2 /* PreviewViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewRepresentable.swift; sourceTree = "<group>"; };
 		4BB722BD27CC5709001E97F2 /* CameraRecordingOutputDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRecordingOutputDelegate.swift; sourceTree = "<group>"; };
+		4BDDF97027D9872F00BAB792 /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +90,7 @@
 				4B391F3727D1AC42009655D2 /* PhotoViewModel.swift */,
 				4B391F3927D1BB2E009655D2 /* ImagePicker.swift */,
 				4B2705B927D461D600E30B44 /* PhotoView.swift */,
+				4BDDF97027D9872F00BAB792 /* VideoView.swift */,
 			);
 			path = PhotoLibrary;
 			sourceTree = "<group>";
@@ -251,6 +254,7 @@
 				4BB722BA27CC33BC001E97F2 /* PreviewViewRepresentable.swift in Sources */,
 				4BA94D4F27CF1DA9003EE80F /* CameraStatus.swift in Sources */,
 				4BB7229427C3056B001E97F2 /* ContentView.swift in Sources */,
+				4BDDF97127D9872F00BAB792 /* VideoView.swift in Sources */,
 				4B6D1B7A27D6DCF70006A8E3 /* CameraCaptureSettings.swift in Sources */,
 				4B2705BD27D4676100E30B44 /* SettingsView.swift in Sources */,
 				4B391F3827D1AC42009655D2 /* PhotoViewModel.swift in Sources */,

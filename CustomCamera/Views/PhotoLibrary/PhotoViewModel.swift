@@ -12,7 +12,7 @@ class PhotoViewModel: ObservableObject {
     @Published var error: AuthorizationError?
     @Published var allPhotos: PHFetchResultCollection?
     
-    private let imageManager = PHImageManager.default()
+    private let imageManager = PHCachingImageManager.default()
     
     init() {
         checkPermissions()
@@ -24,6 +24,20 @@ class PhotoViewModel: ObservableObject {
     
     func getImage(photoAsset: PHAsset) -> UIImage {
         return loadImage(photoAsset: photoAsset, targetSize: PHImageManagerMaximumSize)
+    }
+    
+    func getVideo(videoAsset: PHAsset, completionHandler: @escaping (URL?) -> Void) {
+        let options: PHVideoRequestOptions = PHVideoRequestOptions()
+        options.isNetworkAccessAllowed = true
+        options.version = .original
+        self.imageManager.requestAVAsset(forVideo: videoAsset, options: options, resultHandler: { (asset, audioMix, info) in
+            if let urlAsset = asset as? AVURLAsset {
+                let localVideoUrl = urlAsset.url
+                completionHandler(localVideoUrl)
+            } else {
+                completionHandler(nil)
+            }
+        })
     }
     
     private func loadImage(photoAsset: PHAsset, targetSize: CGSize) -> UIImage {
